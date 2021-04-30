@@ -1,0 +1,34 @@
+
+问题总结：
+1. mac安装mysqlclient:
+    brew install mysql mysql-connector-c openssl
+    pip install mysqlclient
+    如果出现ld ssl相关报错，执行brew info openssl，查看编译设置:
+        export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
+        export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
+    再次执行: pip install mysqlclient
+
+2. pycharm启动Django项目失败，报错Django找不到
+    确保Django安装
+    勾选配置中Excution中的第一个选项:Emulate terminal in output console
+
+3. 使用 uwsgi+nginx 运行flask项目
+    #uwsgi启动脚本start.sh：
+        #!/bin/bash
+        if ps aux | grep -i uwsgi &> /dev/null;then
+          pkill -9 uwsgi
+          sleep 2
+        fi
+        /usr/local/bin/uwsgi --socket "0.0.0.0:8000" --wsgi-file wsgi.py --callable app --master --daemonize ./ui.log
+
+    #nginx基于域名的虚拟主机配置：
+        server {
+            listen       80;
+            server_name  {SERVER} ;
+            access_log logs/nginx-ui-access.log;
+
+            location / {
+            include uwsgi_params;
+            uwsgi_pass {IP}:{PORT};
+            }
+        }
