@@ -1,0 +1,26 @@
+
+maven有三套独立的生命周期：
+    clean：清理项目
+        stage：
+            1. pre-clean：执行清理前需要完成的工作
+            2. clean：清理上一次构建过程中生成的文件，比如编译后的class文件等
+            3. post-clean：执行清理后需要完成的工作
+    default：定义了构建项目时所需要的执行步骤，最核心的部分
+        常见stage：
+            validate：验证项目结构是否正常，必要的配置文件是否存在
+            initialize：构建前的初始化操作，比如初始化参数、创建必要的目录等
+            compile：编译项目中的源代码
+            test-compile：编译测试代码
+            test：运行测试案例
+            package：将编译后的class和资源打包成压缩文件，比如jar
+            verify：检测测试后的包是否完好
+            install：将打包后的组件安装到本地依赖仓库中
+            deploy：发布包到远程仓库
+    site：不常用
+
+常用的maven操作：
+# mvn -s ~/settings.xml -B -U clean package org.apache.maven.plugins:maven-deploy-plugin:2.8:deploy -Dmaven.test.skip=true -Dautoconfig.skip -Dmaven.source.skip
+
+
+# 上传
+mvn deploy:deploy-file -Dfile=文件的位置 -DgroupId=文件groupID -Dversion=文件的版本号 -Dpackaging=jar -Durl=http://ip/nexus/content/repositories/releases -DrepositoryId=releases
